@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "356527596421",
+    "project_id": "iaccess-a425a",
+    "storage_bucket": "iaccess-a425a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:356527596421:android:09df4aafc158f648c69aec",
+        "android_client_info": {
+          "package_name": "com.iaccess.store"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "356527596421-b7d2a91e2mko0pendslagb6fi4do3r85.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqexxOhJeMQyfujHUSGsN7ZnlPStV2fY0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "356527596421-b7d2a91e2mko0pendslagb6fi4do3r85.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "356527596421-20s3repipfj86ppjpvqdg1rk0avufsnq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.iaccess.store"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:356527596421:android:16559e45d11e5589c69aec",
+        "android_client_info": {
+          "package_name": "com.iaccess.user"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "356527596421-b7d2a91e2mko0pendslagb6fi4do3r85.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqexxOhJeMQyfujHUSGsN7ZnlPStV2fY0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "356527596421-b7d2a91e2mko0pendslagb6fi4do3r85.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "356527596421-20s3repipfj86ppjpvqdg1rk0avufsnq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.iaccess.store"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

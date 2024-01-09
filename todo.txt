@@ -1,0 +1,25 @@
+1.10 items Stores and Items 5+5 (muliplte time or muliple users muliple store and items )
+2.if one store found then 1 store and 9 items
+3.if item is less then stores count increse upt 10 
+4.if 200 m 600 m 1500, 2500, 5500 to get store if not not found logic with redius
+
+
+TODO: 
+10 store 
+image and gallery
+user get produts and store 10  without condition 
+Images URL : proper format with full url as per requiest image size managate auto 
+200X100,
+CloudNaary : Implementation with dummy key:
+
+
+
+
+
+
+
+
+
+
+
+

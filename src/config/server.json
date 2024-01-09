@@ -1,0 +1,9 @@
+{
+  "port": 8000,
+  "secret": "apptech-round-767",
+  "saltRounds": 10,
+  "upload": {
+    "endpoint": "/upload"
+  },
+  "server_url": "http://localhost:4002"
+}

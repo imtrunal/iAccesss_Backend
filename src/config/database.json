@@ -1,0 +1,18 @@
+{
+    "development": {
+        "database": "app",
+        "username": "root",
+        "password": "",           
+        "host": "127.0.0.1",
+        "dialect": "mysql", 
+        "seederStorage": "sequelize"
+    },
+    "production": {
+        "username": "root",
+        "password": null,
+        "database": "master",
+        "host": "127.0.0.1",
+        "dialect": "mysql",
+        "seederStorage": "sequelize"
+    }
+}

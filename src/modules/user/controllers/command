@@ -1,0 +1,13 @@
+command
+
+
+    get PID of process running on port 3000:
+
+    lsof -i tcp:3000
+
+    kill th process
+
+    kill -9 process_id
+pm2 start npm -- start
+pm2 save
+pm2 start npm --name "app name" -- start
