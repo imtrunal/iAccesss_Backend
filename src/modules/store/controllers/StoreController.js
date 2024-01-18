@@ -83,7 +83,7 @@ const getPagingData = (data, page, limit) => {
 exports.storeLoginOK = async (req, reply) => {
   try {
     const results = await storeLoginSchema.validateAsync(req.body);
-    console.log("=>", results);
+    //console.log("=>", results);
     var stores = await models.Store.findOne({
       where: {
         username: results.username,
@@ -139,10 +139,10 @@ exports.storeLoginOK = async (req, reply) => {
           "Gender:1 Male 2:Female 3:Others | role:1=Admin 2:User:3:Store";
 
         // / sendOtp.send("7703886088", "PRIIND", "4635", function (error, data) {
-        //    console.log(data);
+        //    //console.log(data);
         //  });
         //  sendOtp.retry("917703886088", true, function (error, data) {
-        //    console.log(data);
+        //    //console.log(data);
         //  });
 
         const OTP = generateRandomNDigits(5);
@@ -226,7 +226,7 @@ exports.storeLogin = async (req, reply) => {
         phone: results.phoneCode + results.phoneNumber,
       },
     });
-    console.log("stores::", stores);
+    //console.log("stores::", stores);
 
     if (!stores) {
 
@@ -248,23 +248,24 @@ exports.storeLogin = async (req, reply) => {
       // client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
       //   .verifications
       //   .create({ to: `${results.phoneCode}${results.phoneNumber}`, channel: 'sms' })
-      //   .then(verification => console.log(verification.status))
-      //   .catch((err) => console.log("We Hace Error:", err))
+      //   .then(verification => //console.log(verification.status))
+      //   .catch((err) => //console.log("We Hace Error:", err))
       // ---- otpSendCode ---- //
 
 
       // check password and login
       const userDetails = stores.get();
-      console.log("userDetails::;", userDetails);
+      // console.log("userDetails::;", userDetails);
 
       // const storeCategoryDetails = StoreCategory.findOne({
       //   where: {
       //     store_id: userDetails.store_id
       //   }
       // })
-
-
-      const { email, id } = userDetails;
+      
+      // if (userDetails.store_name != null) {
+        
+        const { email, id } = userDetails;
 
       const token = await reply.jwtSign(
         {
@@ -276,14 +277,8 @@ exports.storeLogin = async (req, reply) => {
         }
       );
 
-
-      let message = "Store user successfully logged in";
-      let message_code = "StoreController:userLogin-03";
-      let message_action =
-        "Gender:1 Male 2:Female 3:Others | role:1=Admin 2:User:3:Store";
-
       // const OTP = generateRandomNDigits(5);
-
+      console.log('userDetails.id,::',userDetails.id,);
       var storeTimingData = await models.StoreTiming.findOne({
         where: {
           store_id: userDetails.id,
@@ -291,24 +286,31 @@ exports.storeLogin = async (req, reply) => {
       });
       console.log("storeTimingData::", storeTimingData);
 
-      const finalStoreTimingData = {
-        id: storeTimingData.id,
-        sun_open: storeTimingData.sun_open,
-        sun_open_timing: storeTimingData.sun_open_timing,
-        mon_open: storeTimingData.mon_open,
-        mon_open_timing: storeTimingData.mon_open_timing,
-        tue_open: storeTimingData.tue_open,
-        tue_open_timing: storeTimingData.tue_open_timing,
-        wed_open: storeTimingData.wed_open,
-        wed_open_timing: storeTimingData.wed_open_timing,
-        thurs_open: storeTimingData.thurs_open,
-        thurs_open_timing: storeTimingData.thurs_open_timing,
-        fri_open: storeTimingData.fri_open,
-        fri_open_timing: storeTimingData.fri_open_timing,
-        sat_open: storeTimingData.sat_open,
-        sat_open_timing: storeTimingData.sat_open_timing,
-        all_days_open: storeTimingData.all_days_open,
-        all_day_open_timing: storeTimingData.all_day_open_timing,
+      var finalStoreTimingData;
+      if (storeTimingData == null) {
+        finalStoreTimingData = null
+      } else {
+        
+        finalStoreTimingData = {
+          id: storeTimingData.id,
+          sun_open: storeTimingData.sun_open,
+          sun_open_timing: storeTimingData.sun_open_timing,
+          mon_open: storeTimingData.mon_open,
+          mon_open_timing: storeTimingData.mon_open_timing,
+          tue_open: storeTimingData.tue_open,
+          tue_open_timing: storeTimingData.tue_open_timing,
+          wed_open: storeTimingData.wed_open,
+          wed_open_timing: storeTimingData.wed_open_timing,
+          thurs_open: storeTimingData.thurs_open,
+          thurs_open_timing: storeTimingData.thurs_open_timing,
+          fri_open: storeTimingData.fri_open,
+          fri_open_timing: storeTimingData.fri_open_timing,
+          sat_open: storeTimingData.sat_open,
+          sat_open_timing: storeTimingData.sat_open_timing,
+          all_days_open: storeTimingData.all_days_open,
+          all_day_open_timing: storeTimingData.all_day_open_timing,
+        }
+
       }
 
       const dataStoreCategory = await models.StoreCategory.findOne({
@@ -316,7 +318,7 @@ exports.storeLogin = async (req, reply) => {
           store_id: userDetails.id
         }
       });
-      console.log("dataStoreCategory", dataStoreCategory.cat_name);
+      console.log("dataStoreCategory", dataStoreCategory);
 
 
       // const [storeTimingData] = await models.sequelize.query(
@@ -361,7 +363,7 @@ exports.storeLogin = async (req, reply) => {
         phoneCode: userDetails.phoneCode,
         phone: userDetails.phoneNumber,
         email: userDetails.email,
-        cat_name: dataStoreCategory.cat_name,
+        cat_name: dataStoreCategory ?  dataStoreCategory.cat_name : "",
         store_lat: userDetails.store_lat,
         store_long: userDetails.store_long,
         role: userDetails.role,
@@ -375,6 +377,43 @@ exports.storeLogin = async (req, reply) => {
         storetiming: finalStoreTimingData,
       };
 
+      // } else {
+        
+      //   const OTP = 1234;
+      // userData = {
+      //   store_id: userDetails.id,//
+      //   deviceType: null,
+      //   fcm_token: results.fcm_token,//
+      //   store_photo: null,
+      //   store_name: null,
+      //   store_logo: null,
+      //   store_address: null,
+      //   securiy_pin: null,
+      //   phoneVerify: userDetails.phoneVerify,//
+      //   phoneCode: userDetails.phoneCode,//
+      //   phone: userDetails.phoneNumber,//
+      //   email: null,
+      //   cat_name: null,
+      //   store_lat: null,
+      //   store_long: null,
+      //   role: null,
+      //   country_name: null,
+      //   state_name: null,
+      //   city_name: null,
+      //   isActive: null,
+      //   createdAt: null,
+      //   OTP: OTP,
+      //   token: null,
+      //   storetiming: null,
+      // };
+
+      // }
+
+      let message = "Store user successfully logged in";
+      let message_code = "StoreController:userLogin-03";
+      let message_action =
+        "Gender:1 Male 2:Female 3:Others | role:1=Admin 2:User:3:Store";
+
       return Api.setSuccessResponse(
         userData,
         message,
@@ -385,6 +424,7 @@ exports.storeLogin = async (req, reply) => {
     //382 271 637
     // let data=data;
   } catch (err) {
+    console.log('err::::',err);
     let data = "opps";
     let message = err.message;
     let message_code = "StoreController:userLogin-04";
@@ -584,8 +624,8 @@ exports.storeRegister = async (req, reply) => {
       // client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
       //   .verifications
       //   .create({ to: `${results.phoneCode}${results.phoneNumber}`, channel: 'sms' })
-      //   .then(verification => console.log(verification.status))
-      //   .catch((err) => console.log("We Hace Error:", err))
+      //   .then(verification => //console.log(verification.status))
+      //   .catch((err) => //console.log("We Hace Error:", err))
 
       const dataA = await models.Store.update(
         {
@@ -621,7 +661,7 @@ exports.storeRegister = async (req, reply) => {
         }
       }
       )
-
+      console.log('catTableData::',catTableData);
       if (!catTableData) {
         const dataStoreCategory = await models.StoreCategory.create(
           {
@@ -640,6 +680,7 @@ exports.storeRegister = async (req, reply) => {
             }
           }
         )
+        console.log('catData:::',catData);
       }
 
       const storeTimingTableData = await models.StoreTiming.findOne({
@@ -809,7 +850,7 @@ exports.storeRegister = async (req, reply) => {
     //382 271 637
     // let data=data;
   } catch (err) {
-    console.log("Registration", err);
+    //console.log("Registration", err);
     let data = "opps";
     let message = err.message;
     let message_code = "StoreController:userLogin-04";
@@ -834,7 +875,7 @@ exports.checkMobile = async (req, reply) => {
         phone: results.country_code + results.phone_number,
       },
     });
-    console.log("stores::;", stores);
+    //console.log("stores::;", stores);
 
     if (!stores) {
 
@@ -842,7 +883,7 @@ exports.checkMobile = async (req, reply) => {
       // const codeVerify = await client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
       //   .verifications
       //   .create({ to: `${results.country_code}${results.phone_number}`, channel: 'sms' })
-      // console.log("codeVerify::", codeVerify);
+      // //console.log("codeVerify::", codeVerify);
       // ---- End otpSendCode ---- //
 
       //save store with phone number
@@ -853,21 +894,21 @@ exports.checkMobile = async (req, reply) => {
         phoneVerify: 1,
         role: 3,
       });
-      console.log("data:;", data);
+      //console.log("data:;", data);
 
       var storesData = await models.Store.findOne({
         where: {
           id: data.id,
         },
       });
-      console.log("storesData:;;", storesData);
+      //console.log("storesData:;;", storesData);
 
 
       // const OTP = generateRandomNDigits(5);
-      // console.log("OTP::;", OTP);
+      // //console.log("OTP::;", OTP);
 
       const userDetails = storesData.get();
-      console.log("userDetails:;", userDetails);
+      //console.log("userDetails:;", userDetails);
 
       const dataArr = {
         OTP: 1234,
@@ -884,7 +925,7 @@ exports.checkMobile = async (req, reply) => {
         isActive: userDetails.isActive,
         createdAt: userDetails.createdAt,
       };
-      console.log("dataArr::;", dataArr);
+      //console.log("dataArr::;", dataArr);
       //save store with phone number
 
       let message = "store with given phone number";
@@ -932,7 +973,7 @@ exports.checkMobile = async (req, reply) => {
     //382 271 637
     // let data=data;
   } catch (err) {
-    console.log("error", err);
+    //console.log("error", err);
     let data = "opps";
     let message = err;
     let message_code = "StoreController:checkMobile-04";
@@ -1707,7 +1748,7 @@ exports.getProductSubCategory = async (req, reply) => {
       });
 
       for (const isubcat of dataArr) {
-        // console.log(isubcat)
+        // //console.log(isubcat)
         const subcatData = {
           sub_cat_name: isubcat.sub_cat_name,
           cat_id: isubcat.cat_id,
@@ -1808,7 +1849,7 @@ exports.getAttributesListWithValues = async (req, reply) => {
 //updateStoreProduct new
 // exports.updateStoreProduct = async (req, reply) => {
 //   try {
-//     //console.log(req.body.color);
+//     ////console.log(req.body.color);
 //     const colorArrZ = req.body.color;
 //     const colorArrA = [];
 //     for (const c of colorArrZ) {
@@ -1972,7 +2013,7 @@ exports.getAttributesListWithValues = async (req, reply) => {
 //updateStoreProduct
 exports.updateStoreProduct = async (req, reply) => {
   try {
-    //console.log(req.body.color);
+    ////console.log(req.body.color);
     const colorArrZ = req.body.color;
     const colorArrA = [];
     for (const c of colorArrZ) {
@@ -2062,7 +2103,7 @@ exports.updateStoreProduct = async (req, reply) => {
         store_id = ${req.body.store_id}
       `
     )
-    console.log("dataColorDelete", ColorDelete);
+    //console.log("dataColorDelete", ColorDelete);
 
     // const dataSizeDelete = await models.StoreProductSize.update(
     //   {
@@ -2225,10 +2266,10 @@ exports.updateStoreProduct = async (req, reply) => {
 //saveStoreProduct
 exports.saveStoreProduct = async (req, reply) => {
   try {
-    console.log("Data::::;", req.body);
+    //console.log("Data::::;", req.body);
 
     const colorArrZ = req.body.color;
-    console.log("colorArrZ:", colorArrZ);
+    //console.log("colorArrZ:", colorArrZ);
 
     const colorArrA = [];
     for (const c of colorArrZ) {
@@ -2237,7 +2278,7 @@ exports.saveStoreProduct = async (req, reply) => {
     const colorArr = [...new Set(colorArrA)];
 
     const sizeArrZ = req.body.size;
-    console.log("sizeArrZ:", sizeArrZ);
+    //console.log("sizeArrZ:", sizeArrZ);
 
     const sizeArrA = [];
     for (const s of sizeArrZ) {
@@ -2249,12 +2290,12 @@ exports.saveStoreProduct = async (req, reply) => {
     const regularPrice = parseFloat(req.body.product_price);
     const chargeOnProduct = 1 + (regularPrice * 1.5 / 100);
     const maintenanceFee = regularPrice * 2.5 / 100;
-    console.log("regularPrice::", regularPrice);
-    console.log("chargeOnProduct::", chargeOnProduct);
-    console.log("maintenanceFee::", maintenanceFee);
+    //console.log("regularPrice::", regularPrice);
+    //console.log("chargeOnProduct::", chargeOnProduct);
+    //console.log("maintenanceFee::", maintenanceFee);
 
     const totalPrice = regularPrice + parseFloat(chargeOnProduct);
-    console.log("totalPrice::", totalPrice);
+    //console.log("totalPrice::", totalPrice);
     // ----- End forExtraPrice ----- //
 
     const data = await models.StoreProduct.create({
@@ -2267,7 +2308,7 @@ exports.saveStoreProduct = async (req, reply) => {
       extra_price: chargeOnProduct,
       total_price: totalPrice
     });
-    console.log("data::", data);
+    //console.log("data::", data);
 
     colorArr.forEach(async (colorDetails) => {
       const dataColor = await models.StoreProductColor.create({
@@ -2275,7 +2316,7 @@ exports.saveStoreProduct = async (req, reply) => {
         product_id: data.id,
         color_id: colorDetails,
       });
-      console.log("dataColor:", dataColor);
+      //console.log("dataColor:", dataColor);
     });
 
     sizeArr.forEach(async (sizeDetails) => {
@@ -2284,7 +2325,7 @@ exports.saveStoreProduct = async (req, reply) => {
         product_id: data.id,
         size_id: sizeDetails,
       });
-      console.log("dataSize:", dataSize);
+      //console.log("dataSize:", dataSize);
     });
     //StoreProductCategory
     const dataCat = await models.StoreProductCategory.create({
@@ -2292,7 +2333,7 @@ exports.saveStoreProduct = async (req, reply) => {
       store_id: req.body.store_id,
       cat_id: req.body.product_cat,
     });
-    console.log("dataCat::", dataCat);
+    //console.log("dataCat::", dataCat);
 
     const dataSubCat = await models.StoreProductSubCategory.create({
       product_cat_id: req.body.product_cat,
@@ -2300,7 +2341,7 @@ exports.saveStoreProduct = async (req, reply) => {
       store_id: req.body.store_id,
       product_id: data.id,
     });
-    console.log("dataSubCat::", dataSubCat);
+    //console.log("dataSubCat::", dataSubCat);
 
     //StoreProductCategory
 
@@ -2316,7 +2357,7 @@ exports.saveStoreProduct = async (req, reply) => {
     );
 
   } catch (err) {
-    console.log("Error::", err);
+    //console.log("Error::", err);
     let data = "opps";
     let message = err.message;
     let message_code = "UserController:getAttributesListWithValues-04";
@@ -2382,7 +2423,7 @@ exports.getStoreProductList = async (req, reply) => {
       var [soldOut] = await models.sequelize.query(
         `SELECT * FROM  productSoldOuts WHERE  store_id = ${rowData.store_id} AND product_id = ${rowData.id} AND isActive!=2`
       );
-      console.log("soldOut", soldOut[0]);
+      //console.log("soldOut", soldOut[0]);
 
 
 
@@ -2422,7 +2463,7 @@ exports.getStoreProductList = async (req, reply) => {
           subcatID = catSubIDArr.product_sub_cat_id;
         }
 
-        console.log("rowData.store_id:", rowData.store_id);
+        //console.log("rowData.store_id:", rowData.store_id);
 
         var [productColorArr] = await models.sequelize.query(
           `
@@ -2445,7 +2486,7 @@ exports.getStoreProductList = async (req, reply) => {
           `
         );
         for (const productColor of productColorArr) {
-          //console.log(productColor.attr_name);
+          ////console.log(productColor.attr_name);
           const colorData = {
             name: productColor.attr_name,
             code: productColor.attr_code,
@@ -2472,7 +2513,7 @@ exports.getStoreProductList = async (req, reply) => {
             t2.attr_id=2`
         );
         for (const productSize of productSizeArr) {
-          //console.log(productColor.attr_name);
+          ////console.log(productColor.attr_name);
           productSizeArrData.push(productSize.attr_name);
         }
         //productQTYArrData
@@ -2480,7 +2521,7 @@ exports.getStoreProductList = async (req, reply) => {
           `SELECT t1.id,t2.attr_qty from product_sizes t1 join attributeValueMasters t2 on t1.size_id=t2.attr_value where t1.store_id=${rowData.store_id}  and t2.store_id=${rowData.store_id} and t1.product_id=${rowData.id} and t2.isActive = 1 and t2.attr_id=2`
         );
         for (const productQty of productQtyArr) {
-          //console.log(productColor.attr_name);
+          ////console.log(productColor.attr_name);
           productQTYArrData.push(productQty.attr_qty);
         }
         //productQTYArrData
@@ -2635,7 +2676,7 @@ exports.getStoreProductList = async (req, reply) => {
     };
 
     // return ajK;
-    // console.log( data );
+    // //console.log( data );
 
     const responseData = getPagingData(ajK);
     let message = "Get list of product of stores with Filter and Pagination";
@@ -2672,7 +2713,7 @@ exports.getStoreProductListNEW = async (req, reply) => {
     var condition = title
       ? { product_title: { [Op.like]: `%${title}%` } }
       : null;
-    console.log(title);
+    //console.log(title);
     const { limit, offset } = getPagination(page, size);
 
     // StoreProduct
@@ -2734,7 +2775,7 @@ exports.getStoreProductListNEW = async (req, reply) => {
           `SELECT t1.id,t2.attr_name,t2.attr_code,t2.id as master_id from product_colors t1 join attributeValueMasters t2 on t1.color_id=t2.attr_value where t1.store_id=${rowData.store_id}  and t2.store_id=${rowData.store_id} and t1.product_id=${rowData.id} and t2.attr_id=1`
         );
         for (const productColor of productColorArr) {
-          //console.log(productColor.attr_name);
+          ////console.log(productColor.attr_name);
           const colorData = {
             name: productColor.attr_name,
             code: productColor.attr_code,
@@ -2746,7 +2787,7 @@ exports.getStoreProductListNEW = async (req, reply) => {
           `SELECT t1.id,t2.attr_name,t2.attr_code,t2.id as master_id from product_sizes t1 join attributeValueMasters t2 on t1.size_id=t2.attr_value where t1.store_id=${rowData.store_id}  and t2.store_id=${rowData.store_id} and t1.product_id=${rowData.id} and t2.attr_id=2`
         );
         for (const productSize of productSizeArr) {
-          //console.log(productColor.attr_name);
+          ////console.log(productColor.attr_name);
           const colorData = {
             name: productSize.attr_name,
             code: productSize.attr_code,
@@ -2760,7 +2801,7 @@ exports.getStoreProductListNEW = async (req, reply) => {
           `SELECT t1.id,t2.attr_qty, t2.attr_code,t2.id as master_id from product_sizes t1 join attributeValueMasters t2 on t1.size_id=t2.attr_value where t1.store_id=${rowData.store_id}  and t2.store_id=${rowData.store_id} and t1.product_id=${rowData.id} and t2.attr_id=2`
         );
         for (const productQty of productQtyArr) {
-          //console.log(productColor.attr_name);
+          ////console.log(productColor.attr_name);
 
           const colorData = {
             attr_qty: productQty.attr_qty,
@@ -2815,7 +2856,7 @@ exports.getStoreProductListNEW = async (req, reply) => {
     };
 
     // return ajK;
-    // console.log( data );
+    // //console.log( data );
 
     const responseData = getPagingData(ajK, page, limit);
     let message = "Get list of product of stores with Filter and Pagination";
@@ -2850,14 +2891,14 @@ exports.setColorToStore = async (req, reply) => {
 
   try {
     const results = await setColorToStoreSchme.validateAsync(req.body);
-    console.log("Data:", results);
+    //console.log("Data:", results);
     var dataC = [];
 
     for (const attr_sizeVal of results.attr_color) {
-      // console.log( attr_sizeVal );
+      // //console.log( attr_sizeVal );
       const attr_sizeX = attr_sizeVal;
 
-      console.log("attr_sizeX::", attr_sizeX);
+      //console.log("attr_sizeX::", attr_sizeX);
 
       const attrvArr = await models.StoreAttributesValuesMasters.findOne({
         where: {
@@ -2865,7 +2906,7 @@ exports.setColorToStore = async (req, reply) => {
           attr_name: attr_sizeX
         },
       });
-      console.log("attrvArr::", attrvArr);
+      //console.log("attrvArr::", attrvArr);
 
       const attrvArrA = await models.StoreAttributesValuesMasters.findOne({
         attributes: [
@@ -2877,11 +2918,11 @@ exports.setColorToStore = async (req, reply) => {
         where: { store_id: results.store_id, attr_id: 1 },
         raw: true,
       });
-      console.log("attrvArrA::", attrvArrA);
+      //console.log("attrvArrA::", attrvArrA);
 
       const AttrVX = attrvArrA.maxV + 1;
 
-      console.log("AttrVX::", AttrVX);
+      //console.log("AttrVX::", AttrVX);
 
       const A = await models.StoreAttributesValuesMasters.create({
         store_id: results.store_id,
@@ -2890,7 +2931,7 @@ exports.setColorToStore = async (req, reply) => {
         attr_name: attr_sizeX,
         attr_code: attr_sizeX,
       });
-      console.log("A Data::", A);
+      //console.log("A Data::", A);
 
       var FinalData = {
         id: A.id,
@@ -2901,10 +2942,10 @@ exports.setColorToStore = async (req, reply) => {
         CreatedAt: A.createdAt,
       }
       dataC.push(FinalData);
-      // console.log("A", A);
+      // //console.log("A", A);
     }
 
-    console.log("dataC::", dataC);
+    //console.log("dataC::", dataC);
 
 
 
@@ -2968,7 +3009,7 @@ exports.setSizeToStoreAOL = async (req, reply) => {
     const results = await setSizeToStore.validateAsync(req.body);
 
     for (const attr_sizeVal of results.attr_size) {
-      console.log(attr_sizeVal);
+      //console.log(attr_sizeVal);
       const attr_sizeX = attr_sizeVal;
       const attrvArr = await models.StoreAttributesValuesMasters.findOne({
         where: { store_id: results.store_id, attr_name: attr_sizeX },
@@ -3049,7 +3090,7 @@ exports.setSizeToStoreOK = async (req, reply) => {
     const results = await setSizeToStore.validateAsync(req.body);
 
     for (const attr_sizeVal of results.attr_size) {
-      console.log(attr_sizeVal);
+      //console.log(attr_sizeVal);
       const attr_sizeX = attr_sizeVal;
       const attrvArr = await models.StoreAttributesValuesMasters.findOne({
         where: { store_id: results.store_id, attr_name: attr_sizeX },
@@ -3140,7 +3181,7 @@ exports.setSizeToStore = async (req, reply) => {
     var QTYArr = results.attr_qty;
     var i = 0;
     for (const attr_sizeVal of results.attr_size) {
-      console.log(QTYArr[i]);
+      //console.log(QTYArr[i]);
       const attr_sizeX = attr_sizeVal;
       const attrvArr = await models.StoreAttributesValuesMasters.findOne({
         where: { store_id: results.store_id, attr_name: attr_sizeX },
@@ -3252,7 +3293,7 @@ exports.userRequestItemToStore = async (req, reply) => {
         order: [["status", "DESC"]]
       }
     );
-    console.log("productDataArr::", productDataArr.length);
+    //console.log("productDataArr::", productDataArr.length);
 
     const productDataResponse = [];
     for (const fProductData of productDataArr) {
@@ -3264,7 +3305,7 @@ exports.userRequestItemToStore = async (req, reply) => {
           }
         }
       );
-      // console.log("userData::", userData);
+      // //console.log("userData::", userData);
 
       const userDataResponse = {
         user_id: userData.id,
@@ -3290,25 +3331,25 @@ exports.userRequestItemToStore = async (req, reply) => {
           order: [["status", "DESC"]]
         }
       );
-      // console.log("requestProductArr::", requestProductArr);
+      // //console.log("requestProductArr::", requestProductArr);
 
       var [requestProductArr] = await models.sequelize.query(
         `
         SELECT * FROM users_product_store_accepteds WHERE user_id=${fProductData.user_id} AND store_id = ${result.store_id} ORDER BY users_product_store_accepteds.status DESC, id DESC
         `
       );
-      console.log("userId&StoreId::", requestProductArr.length);
+      //console.log("userId&StoreId::", requestProductArr.length);
 
       for (const productRData of requestProductArr) {
-        console.log("productRDataProduct_id::", productRData.product_id);
-        console.log("productRDataStore_id::", productRData.store_id);
+        //console.log("productRDataProduct_id::", productRData.product_id);
+        //console.log("productRDataStore_id::", productRData.store_id);
 
         const [productData] = await models.sequelize.query(
           `
           SELECT t1.*, t2.store_name, t2.store_photo FROM products t1 JOIN stores t2 ON t1.store_id = t2.id WHERE t1.id = ${productRData.product_id}
           `
         )
-        // console.log("productData::",productData);
+        // //console.log("productData::",productData);
 
         const productColorData = [
           {
@@ -3326,11 +3367,11 @@ exports.userRequestItemToStore = async (req, reply) => {
           SELECT product_img FROM productGalleries WHERE store_id = ${productRData.store_id} AND product_id = ${productRData.product_id} AND isActive = 1
           `
         )
-        // console.log("galleryIds::;", productRData.product_id, productRData.store_id);
+        // //console.log("galleryIds::;", productRData.product_id, productRData.store_id);
 
         const maintenanceFee = parseFloat(productData[0].regular_price) * 2.5 / 100;
         const regularPrice = parseFloat(productData[0].regular_price) - parseFloat(maintenanceFee);
-        console.log("maintenanceFee::", maintenanceFee);
+        //console.log("maintenanceFee::", maintenanceFee);
 
         const finalProductData = {
           reqId: productRData.req_id,
@@ -3359,7 +3400,7 @@ exports.userRequestItemToStore = async (req, reply) => {
         }
         productDataResponse.push(finalProductData)
       }
-      // console.log("productDataResponse:::",productDataResponse);
+      // //console.log("productDataResponse:::",productDataResponse);
       var response = {
         userDetail: userDataResponse,
         productDetails: productDataResponse
@@ -3622,7 +3663,7 @@ exports.deletesubCategoryById = async (req, reply) => {
         }
       }
     );
-    console.log("categoryData", [categoryData]);
+    //console.log("categoryData", [categoryData]);
 
     const arrcategoryData = [categoryData]
     for (const product_cat_id of arrcategoryData) {
@@ -3765,7 +3806,7 @@ exports.tokenUpdate = async (req, res) => {
   try {
 
     const data = await fmcTokenUpdate.validateAsync(req.body);
-    console.log("==>", data);
+    //console.log("==>", data);
 
     if (data.store_id) {
 
@@ -3847,7 +3888,7 @@ exports.tokenUpdate = async (req, res) => {
 exports.tokenRemove = async (req, res) => {
   try {
     const data = await fcmTokemRemove.validateAsync(req.body);
-    console.log("==>", data);
+    //console.log("==>", data);
 
     if (data.store_id) {
 
@@ -3930,7 +3971,7 @@ exports.updateStoreDetails = async (req, res) => {
   try {
 
     const result = await updateStoreDetails.validateAsync(req.body);
-    console.log("==>", result);
+    //console.log("==>", result);
 
     const storeOpeningDays = await models.StoreTiming.update(
       {
@@ -3969,6 +4010,17 @@ exports.updateStoreDetails = async (req, res) => {
       }
     );
 
+    const updateStoreCategories = await models.StoreCategory.update(
+      {
+        cat_name: result.store_category
+      },
+      {
+        where: {
+          store_id: result.store_id
+        }
+      }
+    );
+
     let message = "Store Updated ";
     let message_code = "StoreController:updateStoreDetails";
     let message_action = "catched Error:";
@@ -3983,7 +4035,7 @@ exports.updateStoreDetails = async (req, res) => {
   } catch (error) {
 
     let data = "opps";
-    let message = err.message;
+    let message = error.message;
     let message_code = "StoreController:updateStoreDetails";
     let message_action = "catched Error:";
     let api_token = "";
@@ -4003,13 +4055,13 @@ exports.productDetails = async (req, res) => {
   try {
 
     const result = await productDetails.validateAsync(req.body);
-    console.log("result:", result);
+    //console.log("result:", result);
 
     let storeId = result.store_id;
     let productId = result.product_id;
     let userId = result.user_id;
 
-    console.log("datas:::", storeId, productId, userId);
+    //console.log("datas:::", storeId, productId, userId);
 
     const [product] = await models.sequelize.query(
       `
@@ -4027,7 +4079,7 @@ exports.productDetails = async (req, res) => {
         stores.id = products.store_id
       `
     );
-    console.log("product::", product);
+    //console.log("product::", product);
 
     const finalData = {
       "id": product[0].id,
@@ -4096,14 +4148,14 @@ exports.productDetails = async (req, res) => {
         t2.attr_id = 2
       `
     );
-    console.log("productSizeArr[0]::", productSizeArr[0]);
-    console.log("productSizeArr::", productSizeArr);
+    //console.log("productSizeArr[0]::", productSizeArr[0]);
+    //console.log("productSizeArr::", productSizeArr);
 
     let productSize = [];
 
     for (const getProdctSize of productSizeArr) {
 
-      console.log("getProdctSize::", getProdctSize);
+      //console.log("getProdctSize::", getProdctSize);
 
       const productStock = await models.manageProductSize.findOne(
         {
@@ -4114,7 +4166,7 @@ exports.productDetails = async (req, res) => {
           }
         }
       );
-      console.log("QTY:::", productStock);
+      //console.log("QTY:::", productStock);
 
       if (productStock == null) {
 
@@ -4167,7 +4219,7 @@ exports.productDetails = async (req, res) => {
       SELECT * FROM users_product_store_accepteds WHERE user_id = ${userId} AND store_id = ${storeId} AND product_id = ${productId} AND status NOT IN (4,10)
       `
     );
-    console.log("userRequestData::;", userRequestData);
+    //console.log("userRequestData::;", userRequestData);
 
     const userCartData = await models.UserAddTCart.findOne({
       where: {
@@ -4239,7 +4291,7 @@ exports.productDetails = async (req, res) => {
     );
 
   } catch (error) {
-    console.log("--", error);
+    //console.log("--", error);
     let data = "opps";
     let message = err.message;
     let message_code = "StoreController:updateStoreDetails";
@@ -4304,7 +4356,7 @@ exports.openCloseStore = async (req, reply) => {
         api_token
       );
 
-      // console.log("error==>", error);
+      // //console.log("error==>", error);
       // let data = "opps";
       // let message = error.message;
       // let message_code = "StoreController:addStoreData-02";
@@ -4321,7 +4373,7 @@ exports.openCloseStore = async (req, reply) => {
 
 
   } catch (error) {
-    console.log("error==>", error);
+    //console.log("error==>", error);
     let data = "opps";
     let message = error.message;
     let message_code = "StoreController:StoreDataUpdateById-03";
@@ -4344,7 +4396,7 @@ exports.addStoreCardDetails = async (req, reply) => {
   try {
 
     const storeData = await addStoreCardDetailsSchema.validateAsync(req.body);
-    console.log("storeData:", storeData);
+    //console.log("storeData:", storeData);
 
     const insertDetails = await models.userCardDetails.create(
       {
@@ -4358,7 +4410,7 @@ exports.addStoreCardDetails = async (req, reply) => {
         cardService: storeData.cardService,
       }
     );
-    console.log("storeInsertDetails:", insertDetails);
+    //console.log("storeInsertDetails:", insertDetails);
 
     let message = "storeCardDetails Inserted ";
     let message_code = "storeController:addStoreCardDetails-01";
@@ -4373,7 +4425,7 @@ exports.addStoreCardDetails = async (req, reply) => {
     );
 
   } catch (error) {
-    console.log("error==>", error);
+    //console.log("error==>", error);
     let data = "opps";
     let message = error.message;
     let message_code = "StoreController:addStoreCardDetails-02";
@@ -4396,7 +4448,7 @@ exports.getStoreCardDetails = async (req, reply) => {
   try {
 
     const result = await getStoreCardDetailsSchema.validateAsync(req.body);
-    console.log("Data:", result);
+    //console.log("Data:", result);
 
     const getDefaultCardDetails = await models.userCardDetails.findOne(
       {
@@ -4406,7 +4458,7 @@ exports.getStoreCardDetails = async (req, reply) => {
         }
       }
     );
-    console.log("getStoreCardDetails:", getCardDetails);
+    //console.log("getStoreCardDetails:", getCardDetails);
 
     const getCardDetails = await models.userCardDetails.findAll(
       {
@@ -4450,7 +4502,7 @@ exports.getStoreCardDetails = async (req, reply) => {
 
 
   } catch (error) {
-    console.log("error==>", error);
+    //console.log("error==>", error);
     let data = "opps";
     let message = error.message;
     let message_code = "StoreController:getStoreCardDetails-03";
@@ -4473,7 +4525,7 @@ exports.deleteStoreCardDetails = async (req, reply) => {
   try {
 
     const result = await deleteStoreCardDetailsSchema.validateAsync(req.body);
-    console.log("Data:", result);
+    //console.log("Data:", result);
 
     const deleteCardDetails = await models.sequelize.query(
       `
@@ -4492,7 +4544,7 @@ exports.deleteStoreCardDetails = async (req, reply) => {
     );
 
   } catch (error) {
-    console.log("error==>", error);
+    //console.log("error==>", error);
     let data = "opps";
     let message = error.message;
     let message_code = "StoreController:deleteStoreCardDetails-02";
@@ -4515,7 +4567,7 @@ exports.defaultCardStore = async (req, reply) => {
   try {
 
     const result = await defaultCardStoreSchema.validateAsync(req.body);
-    console.log("Data:", result);
+    //console.log("Data:", result);
 
     const setDefaultCard = await models.userCardDetails.update(
       {
@@ -4541,7 +4593,7 @@ exports.defaultCardStore = async (req, reply) => {
     );
 
   } catch (error) {
-    console.log("error==>", error);
+    //console.log("error==>", error);
     let data = "opps";
     let message = error.message;
     let message_code = "StoreController:defaultCardStore-02";
@@ -4564,7 +4616,7 @@ exports.withdrawByStore = async (req, reply) => {
   try {
 
     const result = await withdrawByStoreSchema.validateAsync(req.body);
-    console.log("Data::", result);
+    //console.log("Data::", result);
 
     const getStore = await models.Store.findOne(
       {
@@ -4573,7 +4625,7 @@ exports.withdrawByStore = async (req, reply) => {
         }
       }
     );
-    console.log("getStore::", getStore);
+    //console.log("getStore::", getStore);
 
     const getCardDetails = await models.userCardDetails.findOne(
       {
@@ -4583,10 +4635,10 @@ exports.withdrawByStore = async (req, reply) => {
       }
     );
 
-    console.log("getCardDetails::", getCardDetails);
+    //console.log("getCardDetails::", getCardDetails);
 
-    console.log("cardNumber::", getCardDetails.cardNumber);
-    console.log("cvvNumber::", getCardDetails.cvvNumber);
+    //console.log("cardNumber::", getCardDetails.cardNumber);
+    //console.log("cvvNumber::", getCardDetails.cvvNumber);
 
     const finalCardNumber = getCardDetails.cardNumber.toString();
     const finalCvvNumber = getCardDetails.cvvNumber.toString();
@@ -4602,13 +4654,13 @@ exports.withdrawByStore = async (req, reply) => {
         },
       }
     );
-    console.log("paymentMethod:", paymentMethod);
+    //console.log("paymentMethod:", paymentMethod);
 
 
     // const bankAccount = await stripe.accounts.createExternalAccount(
     //   'acct_1KwNfXSD7GTrOcxg',
     // );
-    // console.log("bankAccount::", bankAccount);
+    // //console.log("bankAccount::", bankAccount);
 
 
     // const account = await stripe.accounts.create({
@@ -4624,13 +4676,13 @@ exports.withdrawByStore = async (req, reply) => {
     //     },
     //   },
     // });
-    // console.log("account::",account);
+    // //console.log("account::",account);
 
     // const payout = await stripe.payouts.create({
     //   amount: 10,
     //   currency: 'USD',
     // });
-    // console.log("Payout::",payout);
+    // //console.log("Payout::",payout);
 
 
     // const transfer = await stripe.transfers.create({
@@ -4638,16 +4690,16 @@ exports.withdrawByStore = async (req, reply) => {
     //   currency: 'inr',
     //   destination: 'acct_1LN8OVCTyqcVtzly'
     // }).then(() => {
-    //   console.log("Successful");
+    //   //console.log("Successful");
     // }).catch((err) => {
-    //   console.log("Error::", err);
+    //   //console.log("Error::", err);
     // })
 
     const customer = await stripe.customers.create({
       email: getStore.email,
       name: getStore.store_name
     });
-    console.log("customer::", customer);
+    //console.log("customer::", customer);
 
     const getStoreData = await models.Store.findOne(
       {
@@ -4663,7 +4715,7 @@ exports.withdrawByStore = async (req, reply) => {
         comment: "Transfer Revenue"
       }
     )
-    console.log("insertInAdminAmount::", insertInAdminAmount);
+    //console.log("insertInAdminAmount::", insertInAdminAmount);
 
     const insertTrasaction = await models.Transaction.create(
       {
@@ -4685,9 +4737,9 @@ exports.withdrawByStore = async (req, reply) => {
     //   source_type: "card",
     //   transfer_group: "ORDER_95"
     // }).then(() => {
-    //   console.log("Successfull");
+    //   //console.log("Successfull");
     // }).catch((err) => {
-    //   console.log("error:", err);
+    //   //console.log("error:", err);
     // })
 
     // const transfer = await stripe.transfers.create({
@@ -4695,10 +4747,10 @@ exports.withdrawByStore = async (req, reply) => {
     //   currency: 'inr',
     //   destination: `${customer.id}`,
     // });
-    // console.log("transfer::", transfer);
+    // //console.log("transfer::", transfer);
 
   } catch (error) {
-    console.log("error==>", error);
+    //console.log("error==>", error);
     let data = "opps";
     let message = error.message;
     let message_code = "StoreController:defaultCardStore-02";
@@ -4721,7 +4773,7 @@ exports.productSoldOut = async (req, res) => {
   try {
 
     const data = await productSoldOutSchema.validateAsync(req.body);
-    console.log("Data::", data);
+    //console.log("Data::", data);
 
     const insertSoldOutProduct = await models.productSoldOut.create(
       {
@@ -4730,7 +4782,7 @@ exports.productSoldOut = async (req, res) => {
         isActive: 0
       }
     );
-    console.log("insertSoldOutProduct::", insertSoldOutProduct);
+    //console.log("insertSoldOutProduct::", insertSoldOutProduct);
 
     const updateProduct = await models.StoreProduct.update(
       {
@@ -4742,7 +4794,7 @@ exports.productSoldOut = async (req, res) => {
         }
       }
     );
-    console.log("updateProduct::", updateProduct);
+    //console.log("updateProduct::", updateProduct);
 
     let message = "product sold out";
     let message_code = "StoreController:productSoldOut-01";
@@ -4756,7 +4808,7 @@ exports.productSoldOut = async (req, res) => {
     );
 
   } catch (error) {
-    console.log("error==>", error);
+    //console.log("error==>", error);
     let data = "opps";
     let message = error.message;
     let message_code = "StoreController:defaultCardStore-02";
@@ -4779,7 +4831,7 @@ exports.productUnsold = async (req, res) => {
   try {
 
     const data = await productUnsoldSchema.validateAsync(req.body);
-    console.log("Data::", data);
+    //console.log("Data::", data);
 
     const updateData = await models.productSoldOut.update(
       {
@@ -4792,7 +4844,7 @@ exports.productUnsold = async (req, res) => {
         }
       }
     );
-    console.log("updateData::", updateData);
+    //console.log("updateData::", updateData);
 
     const productTableUpdate = await models.StoreProduct.update(
       {
@@ -4804,7 +4856,7 @@ exports.productUnsold = async (req, res) => {
         }
       }
     );
-    console.log("productTableUpdate::", productTableUpdate);
+    //console.log("productTableUpdate::", productTableUpdate);
 
     let message = "product is unSold";
     let message_code = "StoreController:productSoldOut-01";
@@ -4818,7 +4870,7 @@ exports.productUnsold = async (req, res) => {
     );
 
   } catch (error) {
-    console.log("error==>", error);
+    //console.log("error==>", error);
     let data = "opps";
     let message = error.message;
     let message_code = "StoreController:defaultCardStore-02";
@@ -4841,7 +4893,7 @@ exports.storeDeactivate = async (req, res) => {
   try {
 
     const data = await storeDeactivateSchema.validateAsync(req.body);
-    console.log("Data::", data);
+    //console.log("Data::", data);
 
     const insertDeactiveStore = await models.storeDeactive.create(
       {
@@ -4849,7 +4901,7 @@ exports.storeDeactivate = async (req, res) => {
         status: 2
       }
     );
-    console.log("insertDeactiveStore::", insertDeactiveStore);
+    //console.log("insertDeactiveStore::", insertDeactiveStore);
 
     const storeData = await models.Store.update(
       {
@@ -4861,7 +4913,7 @@ exports.storeDeactivate = async (req, res) => {
         }
       }
     );
-    console.log("storeData::", storeData);
+    //console.log("storeData::", storeData);
 
     const productUpdate = await models.StoreProduct.update(
       {
@@ -4873,7 +4925,7 @@ exports.storeDeactivate = async (req, res) => {
         }
       }
     );
-    console.log("productUpdate::", productUpdate);
+    //console.log("productUpdate::", productUpdate);
 
     let message = "store is deactive";
     let message_code = "StoreController:storeDeactivate-01";
@@ -4887,7 +4939,7 @@ exports.storeDeactivate = async (req, res) => {
     );
 
   } catch (error) {
-    console.log("error==>", error);
+    //console.log("error==>", error);
     let data = "opps";
     let message = error.message;
     let message_code = "StoreController:storeDeactivate-02";
@@ -4910,7 +4962,7 @@ exports.storeActive = async (req, res) => {
   try {
 
     const data = await storeActiveSchema.validateAsync(req.body);
-    console.log("Data::", data);
+    //console.log("Data::", data);
 
     const updateActiveData = await models.storeDeactive.update(
       {
@@ -4922,7 +4974,7 @@ exports.storeActive = async (req, res) => {
         }
       }
     );
-    console.log("updateActiveData::", updateActiveData);
+    //console.log("updateActiveData::", updateActiveData);
 
     const storeData = await models.Store.update(
       {
@@ -4934,7 +4986,7 @@ exports.storeActive = async (req, res) => {
         }
       }
     );
-    console.log("storeData::", storeData);
+    //console.log("storeData::", storeData);
 
     const productData = await models.StoreProduct.update(
       {
@@ -4946,7 +4998,7 @@ exports.storeActive = async (req, res) => {
         }
       }
     );
-    console.log("productData::", productData);
+    //console.log("productData::", productData);
 
     let message = "store is active";
     let message_code = "StoreController:storeActive-01";
@@ -4960,7 +5012,7 @@ exports.storeActive = async (req, res) => {
     );
 
   } catch (error) {
-    console.log("error==>", error);
+    //console.log("error==>", error);
     let data = "opps";
     let message = error.message;
     let message_code = "StoreController:storeActive-02";
@@ -4982,7 +5034,7 @@ exports.storeOtpVerify = async (req, reply) => {
   try {
 
     const result = await storeOtpVerifySchema.validateAsync(req.body);
-    console.log("result::", result);
+    //console.log("result::", result);
 
     // ---- otpVerifyCode ---- //
     // const codeVerify = await client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
@@ -4992,7 +5044,7 @@ exports.storeOtpVerify = async (req, reply) => {
     //     code: result.otp
     //   })
 
-    // console.log("codeVerify::;", codeVerify);
+    // //console.log("codeVerify::;", codeVerify);
 
     // if (codeVerify.status == "approved") {
     //   const getStoreData = await models.Store.findOne(
@@ -5002,7 +5054,7 @@ exports.storeOtpVerify = async (req, reply) => {
     //       }
     //     }
     //   );
-    //   console.log("getStoreData::", getStoreData);
+    //   //console.log("getStoreData::", getStoreData);
 
     //   const getStoreTimingData = await models.StoreTiming.findOne(
     //     {
@@ -5011,7 +5063,7 @@ exports.storeOtpVerify = async (req, reply) => {
     //       }
     //     }
     //   );
-    //   console.log("getStoreTimingData::", getStoreTimingData);
+    //   //console.log("getStoreTimingData::", getStoreTimingData);
 
     //   const storeTiming = {
     //     id: getStoreTimingData.id,
@@ -5059,7 +5111,7 @@ exports.storeOtpVerify = async (req, reply) => {
     //     storetiming: storeTiming
     //   }
 
-    //   console.log("userData::", userData);
+    //   //console.log("userData::", userData);
 
 
     //   let message = "OTP Verified";
@@ -5103,60 +5155,77 @@ exports.storeOtpVerify = async (req, reply) => {
       );
       console.log("getStoreData::", getStoreData);
 
-      const getStoreTimingData = await models.StoreTiming.findOne(
-        {
+        
+        const getStoreTimingData = await models.StoreTiming.findOne(
+          {
+            where: {
+              store_id: result.store_id
+            }
+          }
+        );
+        //console.log("getStoreTimingData::", getStoreTimingData);
+
+        const dataStoreCategory = await models.StoreCategory.findOne({
           where: {
             store_id: result.store_id
           }
+        });
+        console.log("dataStoreCategory", dataStoreCategory);
+
+        var storeTiming;
+      if (getStoreTimingData == null) {
+        storeTiming = null
+      } else {
+  
+        storeTiming = {
+          id: getStoreTimingData.id,
+          sun_open: getStoreTimingData.sun_open,
+          sun_open_timing: getStoreTimingData.sun_open_timing,
+          mon_open: getStoreTimingData.mon_open,
+          mon_open_timing: getStoreTimingData.mon_open_timing,
+          tue_open: getStoreTimingData.tue_open,
+          tue_open_timing: getStoreTimingData.tue_open_timing,
+          wed_open: getStoreTimingData.wed_open,
+          wed_open_timing: getStoreTimingData.wed_open_timing,
+          thurs_open: getStoreTimingData.thurs_open,
+          thurs_open_timing: getStoreTimingData.thurs_open_timing,
+          fri_open: getStoreTimingData.fri_open,
+          fri_open_timing: getStoreTimingData.fri_open_timing,
+          sat_open: getStoreTimingData.sat_open,
+          sat_open_timing: getStoreTimingData.sat_open_timing,
+          all_days_open: getStoreTimingData.all_days_open,
+          all_day_open_timing: getStoreTimingData.all_day_open_timing,
         }
-      );
-      console.log("getStoreTimingData::", getStoreTimingData);
 
-      const storeTiming = {
-        id: getStoreTimingData.id,
-        sun_open: getStoreTimingData.sun_open,
-        sun_open_timing: getStoreTimingData.sun_open_timing,
-        mon_open: getStoreTimingData.mon_open,
-        mon_open_timing: getStoreTimingData.mon_open_timing,
-        tue_open: getStoreTimingData.tue_open,
-        tue_open_timing: getStoreTimingData.tue_open_timing,
-        wed_open: getStoreTimingData.wed_open,
-        wed_open_timing: getStoreTimingData.wed_open_timing,
-        thurs_open: getStoreTimingData.thurs_open,
-        thurs_open_timing: getStoreTimingData.thurs_open_timing,
-        fri_open: getStoreTimingData.fri_open,
-        fri_open_timing: getStoreTimingData.fri_open_timing,
-        sat_open: getStoreTimingData.sat_open,
-        sat_open_timing: getStoreTimingData.sat_open_timing,
-        all_days_open: getStoreTimingData.all_days_open,
-        all_day_open_timing: getStoreTimingData.all_day_open_timing,
       }
-
-      const userData = {
-        store_id: getStoreData.id,
-        deviceType: getStoreData.deviceType,
-        fcm_token: getStoreData.fcm_token,
-        store_photo: getStoreData.store_photo,
-        store_name: getStoreData.store_name,
-        store_logo: getStoreData.store_logo,
-        store_address: getStoreData.store_address,
-        securiy_pin: getStoreData.securiy_pin,
-        phoneVerify: getStoreData.phoneVerify,
-        phoneCode: getStoreData.phoneCode,
-        phone: getStoreData.phoneNumber,
-        email: getStoreData.email,
-        store_lat: getStoreData.store_lat,
-        store_long: getStoreData.store_long,
-        role: getStoreData.role,
-        country_name: getStoreData.country_name,
-        state_name: getStoreData.state_name,
-        city_name: getStoreData.city_name,
-        isActive: getStoreData.isActive,
-        createdAt: getStoreData.createdAt,
-        OTP: 'OTP',
-        token: 'token',
-        storetiming: storeTiming
-      }
+  
+        const userData = {
+          store_id: getStoreData.id,
+          deviceType: getStoreData.deviceType,
+          fcm_token: getStoreData.fcm_token,
+          store_photo: getStoreData.store_photo,
+          store_name: getStoreData.store_name,
+          store_logo: getStoreData.store_logo,
+          store_address: getStoreData.store_address,
+          securiy_pin: getStoreData.securiy_pin,
+          phoneVerify: getStoreData.phoneVerify,
+          phoneCode: getStoreData.phoneCode,
+          phone: getStoreData.phoneNumber,
+          email: getStoreData.email,
+          cat_name: dataStoreCategory ?  dataStoreCategory.cat_name : "",
+          store_lat: getStoreData.store_lat,
+          store_long: getStoreData.store_long,
+          role: getStoreData.role,
+          country_name: getStoreData.country_name,
+          state_name: getStoreData.state_name,
+          city_name: getStoreData.city_name,
+          isActive: getStoreData.isActive,
+          createdAt: getStoreData.createdAt,
+          OTP: 'OTP',
+          token: 'token',
+          storetiming: storeTiming
+        }
+     
 
       let message = "OTP Verified";
       let message_code = "UserController:driverRequested-01";
@@ -5188,7 +5257,7 @@ exports.storeOtpVerify = async (req, reply) => {
     // --- End tempOtpPortion --- //
 
   } catch (error) {
-    console.log("error==>", error);
+    //console.log("error==>", error);
     let data = "opps";
     let message = error.message;
     let message_code = "StoreController:storeOtpVerify-02";
@@ -5210,7 +5279,7 @@ exports.insertStoreComment = async (req, reply) => {
   try {
 
     const result = await insertStoreCommentSchema.validateAsync(req.body);
-    console.log("result:;", result);
+    //console.log("result:;", result);
 
     const getuserData = await models.User.findOne(
       {
@@ -5219,7 +5288,7 @@ exports.insertStoreComment = async (req, reply) => {
         }
       }
     );
-    console.log("getuserData::;", getuserData);
+    //console.log("getuserData::;", getuserData);
 
     const insertComment = await models.Comments.create(
       {
@@ -5230,7 +5299,7 @@ exports.insertStoreComment = async (req, reply) => {
         user_image: getuserData.avatar
       }
     )
-    console.log("insertComment::", insertComment);
+    //console.log("insertComment::", insertComment);
 
     let data = insertComment
     let message = "Add Store comments";
@@ -5246,7 +5315,7 @@ exports.insertStoreComment = async (req, reply) => {
     );
 
   } catch (error) {
-    console.log("error==>", err);
+    //console.log("error==>", err);
     let data = "Opps";
     let message = error.message;
     let message_code = "StoreController:insertStoreComment-02";
@@ -5269,7 +5338,7 @@ exports.getStoreComments = async (req, reply) => {
   try {
 
     const result = await getStoreCommentsSchema.validateAsync(req.body);
-    console.log("result::", result);
+    //console.log("result::", result);
 
     const getCommentsData = await models.Comments.findAll(
       {
@@ -5279,7 +5348,7 @@ exports.getStoreComments = async (req, reply) => {
         order: [["createdAt", "DESC"]]
       }
     );
-    console.log("getCommentsData::", getCommentsData);
+    //console.log("getCommentsData::", getCommentsData);
 
     let data = getCommentsData
     let message = "Get Store Comments Data";
@@ -5296,7 +5365,7 @@ exports.getStoreComments = async (req, reply) => {
 
 
   } catch (error) {
-    console.log("error==>", error);
+    //console.log("error==>", error);
     let data = "opps";
     let message = error.message;
     let message_code = "UserController:getStoreComments-02";
@@ -5323,7 +5392,7 @@ exports.updateProductData = async (req, res) => {
     )
 
   } catch (error) {
-    console.log("error==>", error);
+    //console.log("error==>", error);
     let data = "opps";
     let message = error.message;
     let message_code = "UserController:getStoreComments-02";
@@ -5393,7 +5462,7 @@ exports.getStoreAddress = async (req, res) => {
 
 
   } catch (error) {
-    console.log("error==>", error);
+    //console.log("error==>", error);
     let data = "opps";
     let message = error.message;
     let message_code = "storeController:getStoreAddress-02";
@@ -5416,7 +5485,7 @@ exports.insertW9Tax = async (req, res) => {
   try {
 
     const result = await insertStoreW9TaxSchema.validateAsync(req.body);
-    console.log("result:;", result);
+    //console.log("result:;", result);
 
     var stores = await models.Store.findOne({
       where: {
@@ -5486,7 +5555,7 @@ exports.getW9Tax = async (req, res) => {
   try {
 
     const result = await getW9Tax.validateAsync(req.body);
-    console.log("result", result);
+    //console.log("result", result);
 
     const taxData = await models.StoreW9Tax.findAll(
       {

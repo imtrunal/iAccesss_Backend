@@ -2710,9 +2710,16 @@ exports.userStoreProductSearch = async (req, reply) => {
       });
       // console.log("storeTimigRecord::",storeTimigRecord);
 
+      var storeCategory = await models.StoreCategory.findOne({
+        where: {
+          store_id: storeData.id,
+        }
+      });
+
       const storeXData = {
         store: storeRecord,
         storeTiming: storeTimigRecord,
+        category_name: storeCategory.cat_name
       };
       storeAll.push(storeXData);
     }

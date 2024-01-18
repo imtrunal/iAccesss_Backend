@@ -10,7 +10,7 @@ const multer = require("fastify-multer");
 import models from "../setup/models";
 import * as Api from "../setup/ApiResponse";
 import * as ayraFCM from "../setup/FirebaseHelper";
-import { time } from "console";    
+import { time } from "console";
 import { title } from "process";
 import { argv } from "process";
 
@@ -2340,48 +2340,48 @@ export default function (server) {
           console.log("dbTime", dbTime);
 
           let isInRange;
-          if(dbTime == "24 hours") {
+          if (dbTime == "24 hours") {
             isInRange = true
           } else {
             const splitDbTime = dbTime.split(" ")
             console.log("splitDbTime", splitDbTime);
-  
+
             function isTimeInRange(time) {
               console.log("time=========", time);
               const startTime = splitDbTime[0];
               const endTime = splitDbTime[2];
-  
+
               // Convert time strings to 24-hour format
               const startTime24 = convertTo24HourFormat(startTime);
               const endTime24 = convertTo24HourFormat(endTime);
               const timeToCheck24 = convertTo24HourFormat(time);
-  
+
               // Perform the comparison
               return timeToCheck24 >= startTime24 && timeToCheck24 <= endTime24;
             }
-  
+
             function convertTo24HourFormat(time) {
               // const [hour, minute] = time.slice(0, -2).split(":");
               // const meridiem = time.slice(-2);
-  
+
               const [hour, minute, meridiem] = time.match(/^(\d{1,2}):(\d{2})(AM|PM)$/).slice(1);
-  
+
               let hour24 = parseInt(hour);
-  
+
               if (meridiem === "PM" && hour !== "12") {
                 hour24 += 12;
               } else if (meridiem === "AM" && hour === "12") {
                 hour24 = 0;
               }
-  
+
               return `${hour24.toString().padStart(2, "0")}:${minute}`;
             }
-  
+
             // Usage example 
             const timeToCheck = splitTime[1];
             isInRange = isTimeInRange(timeToCheck);
           }
-          
+
           console.log(isInRange); // true or false
 
           const splitTimeForStatus = currentTime.split("_");
@@ -2487,7 +2487,7 @@ export default function (server) {
               console.log("driverAmount:::;;;;;;;;;", driverAmount);
               const insertTrasactionData = await models.Transaction.update(
                 {
-                  driver_id: arg.driver_id,
+                  // driver_id: arg.driver_id,
                   delivery_price: driverAmount
                 },
                 {
@@ -2721,6 +2721,89 @@ export default function (server) {
 
               // ----- End forProductData -----
 
+              const getUserAcceptData = await models.UserProductItemRequetAcceptedStore.findAll(
+                {
+                  where: {
+                    req_id: arg.req_id
+                  }
+                }
+              )
+
+              var price = 0;
+
+              for (const processData of getUserAcceptData) {
+
+                console.log("processDataIds....", processData.product_id);
+
+                const getFinalRequestByUSerData = await models.finalRequestByUser.findOne(
+                  {
+                    where: {
+                      req_id: processData.req_id,
+                      store_id: processData.store_id,
+                    }
+                  }
+                )
+                // console.log("getFinalRequestByUSerData:", getFinalRequestByUSerData);
+
+                const getProductData = await models.StoreProduct.findOne(
+                  {
+                    where: {
+                      id: processData.product_id
+                    }
+                  }
+                )
+                // console.log("getProductData::", getProductData);
+
+                let totalProductAmount = parseFloat(getProductData.total_price);
+                price = totalProductAmount + price;
+
+                // console.log("totalProductAmount::", totalProductAmount);
+
+              }
+
+              const getFinalRequestByUSerData = await models.finalRequestByUser.findOne(
+                {
+                  where: {
+                    req_id: arg.req_id,
+                    store_id: arg.store_id,
+                  }
+                }
+              )
+              // console.log("getFinalRequestByUSerData:", getFinalRequestByUSerData);
+
+              // console.log("price...", price);
+              // console.log("parseFloat(arg.delivery_price)...", parseFloat(getFinalRequestByUSerData.delivery_price));
+
+              const Total_Amount = price + parseFloat(getFinalRequestByUSerData.delivery_price);
+              // console.log("Total_Amount::", Total_Amount);
+
+              // console.log("getUserAcceptData[0].user_id...", getUserAcceptData[0].user_id);
+              // console.log("getUserAcceptData.user_id.....", getUserAcceptData.user_id);
+
+
+              const getUserDatails = await models.User.findOne(
+                {
+                  where: {
+                    id: arg.user_id
+                  }
+                }
+              )
+              // console.log("getUserDatails::", getUserDatails);
+
+              const userTotalAmount = parseFloat(getUserDatails.walletAmount) + Total_Amount;
+              // console.log("userTotalAmount::", userTotalAmount);
+
+              const updateUserWallet = await models.User.update(
+                {
+                  walletAmount: userTotalAmount
+                },
+                {
+                  where: {
+                    id: arg.user_id
+                  }
+                }
+              )
+
               const responseData = {
                 req_id: arg.req_id,
                 store_id: arg.store_id,
@@ -2898,7 +2981,7 @@ export default function (server) {
           // ----- insertTransactionDataByreq_id -----
           const insertTrasactionData = await models.Transaction.update(
             {
-              driver_id: arg.driver_id,
+              // driver_id: arg.driver_id,
               delivery_price: driverAmount
             },
             {
@@ -4889,12 +4972,18 @@ export default function (server) {
         )
         console.log("getuserProductStoreAccepted::", getuserProductStoreAccepted[0]);
 
+        const getUserData = await models.User.findOne({
+          where: {
+            id: arg.user_id
+          }
+        });
+
         if (getuserProductStoreAccepted[0] == undefined) {
           const userRoom = `User${arg.user_id}`;
           io.to(userRoom).emit("runningReqAlertToUser", 0);
 
 
-          const registrationToken = getuserProductStoreAccepted[0].fcm_token;
+          const registrationToken = getUserData.fcm_token;
           const title = "iAccess notification";
           const body = '';
           const req_id = '1';
@@ -4918,7 +5007,7 @@ export default function (server) {
           io.to(userRoom).emit("runningReqAlertToUser", 1);
 
 
-          const registrationToken = getuserProductStoreAccepted[0].fcm_token;
+          const registrationToken = getUserData.fcm_token;
           const title = "iAccess notification";
           const body = '';
           const req_id = '1';
@@ -5393,39 +5482,39 @@ export default function (server) {
         console.log("getProductData::", getProductData);
 
 
-        const getUserAcceptData = await models.UserProductItemRequetAcceptedStore.findAll(
-          {
-            where: {
-              req_id: arg.req_id
-            }
-          }
-        )
-        console.log("getUserAcceptData::", getUserAcceptData);
+        // const getUserAcceptData = await models.UserProductItemRequetAcceptedStore.findAll(
+        //   {
+        //     where: {
+        //       req_id: arg.req_id
+        //     }
+        //   }
+        // )
+        // console.log("getUserAcceptData::", getUserAcceptData);
 
-        var price = 0;
+        // var price = 0;
 
-        for (const processData of getUserAcceptData) {
+        // for (const processData of getUserAcceptData) {
 
-          const getProduct = await models.StoreProduct.findOne(
-            {
-              where: {
-                id: processData.product_id
-              }
-            }
-          );
-          console.log("getProduct::", getProduct);
+        //   const getProduct = await models.StoreProduct.findOne(
+        //     {
+        //       where: {
+        //         id: processData.product_id
+        //       }
+        //     }
+        //   );
+        //   console.log("getProduct::", getProduct);
 
-          let totalPrice = parseFloat(getProduct.regular_price) - parseFloat(getProduct.maintenance_fee);
+        //   let totalPrice = parseFloat(getProduct.regular_price) - parseFloat(getProduct.maintenance_fee);
 
-          price = totalPrice + price;
+        //   price = totalPrice + price;
 
-          console.log("productPrice:", getProduct.regular_price);
-          console.log("totalPrice::", totalPrice);
+        //   console.log("productPrice:", getProduct.regular_price);
+        //   console.log("totalPrice::", totalPrice);
 
-        }
+        // }
 
-        const Total_price = price;
-        console.log("Total_price:", Total_price);
+        // const Total_price = price;
+        // console.log("Total_price:", Total_price);
 
 
         const insertTransactionDetails = await models.Transaction.create(
@@ -5457,29 +5546,29 @@ export default function (server) {
         // const totalPrice = parseFloat(getProductData.regular_price) + parseFloat(getFinalrequestData.delivery_price);
         // console.log("totalPrice::", totalPrice);
 
-        var getStoreData = await models.Store.findOne(
-          {
-            where: {
-              id: arg.store_id
-            }
-          }
-        );
-        console.log("getStoreData::", getStoreData);
+        // var getStoreData = await models.Store.findOne(
+        //   {
+        //     where: {
+        //       id: arg.store_id
+        //     }
+        //   }
+        // );
+        // console.log("getStoreData::", getStoreData);
 
-        const storeAmt = parseFloat(getStoreData.wallet) + parseFloat(Total_price);
-        console.log("storeAmt::", storeAmt);
+        // const storeAmt = parseFloat(getStoreData.wallet) + parseFloat(Total_price);
+        // console.log("storeAmt::", storeAmt);
 
-        const addMoneyToStore = await models.Store.update(
-          {
-            wallet: storeAmt
-          },
-          {
-            where: {
-              id: arg.store_id
-            }
-          }
-        );
-        console.log("addMoneyToStore::", addMoneyToStore);
+        // const addMoneyToStore = await models.Store.update(
+        //   {
+        //     wallet: storeAmt
+        //   },
+        //   {
+        //     where: {
+        //       id: arg.store_id
+        //     }
+        //   }
+        // );
+        // console.log("addMoneyToStore::", addMoneyToStore);
 
         // ----- End addAmountInStoreAccount ----- //
 
@@ -5952,6 +6041,64 @@ export default function (server) {
         )
         console.log("getProductData::", getProductData);
 
+        const getStoreData = await models.Store.findOne({
+          where: {
+            id: getFinalRequestTable.store_id
+          }
+        });
+
+        // ----- walleteAmountUpdateForStore ----- //
+        const getUserAcceptData = await models.UserProductItemRequetAcceptedStore.findAll(
+          {
+            where: {
+              req_id: arg.req_id
+            }
+          }
+        )
+        console.log("getUserAcceptData::", getUserAcceptData);
+
+        var price = 0;
+
+        for (const processData of getUserAcceptData) {
+
+          const getProduct = await models.StoreProduct.findOne(
+            {
+              where: {
+                id: processData.product_id
+              }
+            }
+          );
+          console.log("getProduct::", getProduct);
+
+          let totalPrice = parseFloat(getProduct.regular_price) - parseFloat(getProduct.maintenance_fee);
+
+          price = totalPrice + price;
+
+          console.log("productPrice:", getProduct.regular_price);
+          console.log("totalPrice::", totalPrice);
+
+        }
+
+        const Total_price = price;
+        console.log("Total_price:", Total_price);
+
+        const storeAmt = parseFloat(getStoreData.wallet) + parseFloat(Total_price);
+        console.log("storeAmt::", storeAmt);
+
+        const addMoneyToStore = await models.Store.update(
+          {
+            wallet: storeAmt
+          },
+          {
+            where: {
+              id: getFinalRequestTable.store_id
+            }
+          }
+        );
+        console.log("addMoneyToStore::", addMoneyToStore);
+
+        // ----- End walleteAmountUpdateForStore ----- //
+
         // ----- deliveryPriceAmount ----- //
 
         const deliveryPrice = parseFloat(getFinalRequestTable.delivery_price);
@@ -5999,7 +6146,7 @@ export default function (server) {
             total_delivery_price: deliveryPrice,
             transactions: deliveryPrice,
             type: 1,
-            message: `${getUserData.firstName} paid for the ordered ${getProductData.product_title} and delivery fees is ${getFinalRequestTable.delivery_price}`
+            message: `You have completed this delivery for ${getStoreData.store_name} for the amount of ${getFinalRequestTable.delivery_price}, and it will reflect in your wallet`
           }
         )
         console.log("insertTransactionDetails::", insertTransactionDetails);
@@ -7489,6 +7636,57 @@ export default function (server) {
 
     })
     // ----- End addWithdrawRequest ----- //
+
+
+    // ----- checkStoreRegStep ----- //
+    socket.on("checkStoreRegStep", async (arg) => {
+      const storeId = arg.store_id;
+      const storeRoom = `Store${storeId}`;
+
+      const storeData = await models.Store.findOne({
+        where: {
+          id: storeId
+        }
+      });
+
+      const storeW9Taxes = await models.StoreW9Tax.findOne({
+        where: {
+          store_id: storeId
+        }
+      });
+
+      let response = {}; // Initialize an empty response object
+
+      if (storeData.store_name == null) {
+        response = { status: 1 };
+        io.to(storeRoom).emit("verifyRegStepStatus", response);
+        return
+      }
+      if (storeData.phoneCode == "+1") {
+        if (storeW9Taxes == null) {
+          response = { status: 2 };
+          io.to(storeRoom).emit("verifyRegStepStatus", response);
+          return
+        }
+      }
+      if (storeData.store_logo == null) {
+        response = { status: 3 };
+        io.to(storeRoom).emit("verifyRegStepStatus", response);
+        return
+      }
+      if (storeData.store_photo == null) {
+        response = { status: 4 };
+        io.to(storeRoom).emit("verifyRegStepStatus", response);
+        return
+      }
+
+      // If none of the conditions are met, assign status 5
+      if (Object.keys(response).length === 0) {
+        response = { status: 5 };
+        io.to(storeRoom).emit("verifyRegStepStatus", response);
+      }
+    });
+    // ----- checkStoreRegStep ----- //
 
 
     // ----- driverDemoSocket ----- //

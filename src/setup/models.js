@@ -8,7 +8,7 @@ const models = {
   // User: databaseConnection.import('../modules/user/model'),old
   User: require("../modules/user/models")(databaseConnection, Sequelize),
   Store: require("../modules/store/models")(databaseConnection, Sequelize),
-  StoreCategory: require("../modules/store/models/models_category")(databaseConnection, Sequelize),
+  // StoreCategory: require("../modules/store/models/models_category")(databaseConnection, Sequelize),
   ItemCategoryMaster: require("../modules/store/models/models_item_category_master")(databaseConnection, Sequelize),
   ItemSubCategoryMaster: require("../modules/store/models/models_item_sub_category_master")(databaseConnection, Sequelize),
   StoreCategory: require("../modules/store/models/models_store_category")(databaseConnection, Sequelize),

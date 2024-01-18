@@ -171,7 +171,7 @@ const updateStoreDetails = Joi.object({
   store_address: Joi.required(),
   store_lat: Joi.required(),
   store_long: Joi.required(),
-  // store_category: Joi.required(),
+  store_category: Joi.required(),
   store_opening_days: Joi.required(),
   all_days_open: Joi.required(),
   // open_hours: Joi.required(),
