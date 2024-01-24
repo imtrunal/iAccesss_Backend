@@ -1421,7 +1421,7 @@ export default function (server) {
           product_price: getProductData.regular_price,
           extra_price: getProductData.extra_price,
           total_price: getProductData.total_price,
-          message: `${getUserData.firstName} had ordered ${getProductData.product_title} from ${getStoreData.store_name} and paid ${Total_price}`,
+          message: `You ordered ${getProductData.product_title} from your ${getStoreData.store_name} store. You paid $${Total_price}, and it was deducted from your wallet balance`,
           transactions: Total_price,
           type: 1,
         }
@@ -2790,8 +2790,8 @@ export default function (server) {
               )
               // console.log("getUserDatails::", getUserDatails);
 
-              const userTotalAmount = parseFloat(getUserDatails.walletAmount) + Total_Amount;
-              // console.log("userTotalAmount::", userTotalAmount);
+              const userTotalAmount = parseFloat(getUserDatails.walletAmount) - Total_Amount;
+              console.log("userTotalAmount::", userTotalAmount);
 
               const updateUserWallet = await models.User.update(
                 {
@@ -4983,23 +4983,23 @@ export default function (server) {
           io.to(userRoom).emit("runningReqAlertToUser", 0);
 
 
-          const registrationToken = getUserData.fcm_token;
-          const title = "iAccess notification";
-          const body = '';
-          const req_id = '1';
-          const product_id = '1';
-          const status = 'o';
+          // const registrationToken = getUserData.fcm_token;
+          // const title = "iAccess notification";
+          // const body = '';
+          // const req_id = '1';
+          // const product_id = '1';
+          // const status = 'o';
 
-          console.log("registrationToken13:", registrationToken);
-          ayraFCM.sendPushNotificationFCM(
-            registrationToken,
-            title,
-            body,
-            req_id,
-            product_id,
-            status,
-            true
-          )
+          // console.log("registrationToken13:", registrationToken);
+          // ayraFCM.sendPushNotificationFCM(
+          //   registrationToken,
+          //   title,
+          //   body,
+          //   req_id,
+          //   product_id,
+          //   status,
+          //   true
+          // )
 
 
         } else {
@@ -5007,23 +5007,23 @@ export default function (server) {
           io.to(userRoom).emit("runningReqAlertToUser", 1);
 
 
-          const registrationToken = getUserData.fcm_token;
-          const title = "iAccess notification";
-          const body = '';
-          const req_id = '1';
-          const product_id = '1';
-          const status = 'o';
+          // const registrationToken = getUserData.fcm_token;
+          // const title = "iAccess notification";
+          // const body = '';
+          // const req_id = '1';
+          // const product_id = '1';
+          // const status = 'o';
 
-          console.log("registrationToken14:", registrationToken);
-          ayraFCM.sendPushNotificationFCM(
-            registrationToken,
-            title,
-            body,
-            req_id,
-            product_id,
-            status,
-            true
-          )
+          // console.log("registrationToken14:", registrationToken);
+          // ayraFCM.sendPushNotificationFCM(
+          //   registrationToken,
+          //   title,
+          //   body,
+          //   req_id,
+          //   product_id,
+          //   status,
+          //   true
+          // )
 
         }
       }
@@ -5048,46 +5048,46 @@ export default function (server) {
           const storeRoom = `Store${arg.store_id}`;
           io.to(storeRoom).emit("runningReqAlertToStore", 0);
 
-          const registrationToken = getuserProductStoreAccepted[0].fcm_token;
-          const title = "iAccess notification";
-          const body = '';
-          const req_id = '1';
-          const product_id = '1';
-          const status = 'o';
+          // const registrationToken = getuserProductStoreAccepted[0].fcm_token;
+          // const title = "iAccess notification";
+          // const body = '';
+          // const req_id = '1';
+          // const product_id = '1';
+          // const status = 'o';
 
-          console.log("registrationToken15:", registrationToken);
-          ayraFCM.sendPushNotificationFCM(
-            registrationToken,
-            title,
-            body,
-            req_id,
-            product_id,
-            status,
-            true
-          )
+          // console.log("registrationToken15:", registrationToken);
+          // ayraFCM.sendPushNotificationFCM(
+          //   registrationToken,
+          //   title,
+          //   body,
+          //   req_id,
+          //   product_id,
+          //   status,
+          //   true
+          // )
 
         } else {
 
           const storeRoom = `Store${arg.store_id}`;
           io.to(storeRoom).emit("runningReqAlertToStore", 1);
 
-          const registrationToken = getuserProductStoreAccepted[0].fcm_token;
-          const title = "iAccess notification";
-          const body = '';
-          const req_id = '1';
-          const product_id = '1';
-          const status = '1';
+          // const registrationToken = getuserProductStoreAccepted[0].fcm_token;
+          // const title = "iAccess notification";
+          // const body = '';
+          // const req_id = '1';
+          // const product_id = '1';
+          // const status = '1';
 
-          console.log("registrationToken16:", registrationToken);
-          ayraFCM.sendPushNotificationFCM(
-            registrationToken,
-            title,
-            body,
-            req_id,
-            product_id,
-            status,
-            true
-          )
+          // console.log("registrationToken16:", registrationToken);
+          // ayraFCM.sendPushNotificationFCM(
+          //   registrationToken,
+          //   title,
+          //   body,
+          //   req_id,
+          //   product_id,
+          //   status,
+          //   true
+          // )
 
         }
 
@@ -5482,39 +5482,39 @@ export default function (server) {
         console.log("getProductData::", getProductData);
 
 
-        // const getUserAcceptData = await models.UserProductItemRequetAcceptedStore.findAll(
-        //   {
-        //     where: {
-        //       req_id: arg.req_id
-        //     }
-        //   }
-        // )
-        // console.log("getUserAcceptData::", getUserAcceptData);
+        const getUserAcceptData = await models.UserProductItemRequetAcceptedStore.findAll(
+          {
+            where: {
+              req_id: arg.req_id
+            }
+          }
+        )
+        console.log("getUserAcceptData::", getUserAcceptData);
 
-        // var price = 0;
+        var price = 0;
 
-        // for (const processData of getUserAcceptData) {
+        for (const processData of getUserAcceptData) {
 
-        //   const getProduct = await models.StoreProduct.findOne(
-        //     {
-        //       where: {
-        //         id: processData.product_id
-        //       }
-        //     }
-        //   );
-        //   console.log("getProduct::", getProduct);
+          const getProduct = await models.StoreProduct.findOne(
+            {
+              where: {
+                id: processData.product_id
+              }
+            }
+          );
+          console.log("getProduct::", getProduct);
 
-        //   let totalPrice = parseFloat(getProduct.regular_price) - parseFloat(getProduct.maintenance_fee);
+          let totalPrice = parseFloat(getProduct.regular_price) - parseFloat(getProduct.maintenance_fee);
 
-        //   price = totalPrice + price;
+          price = totalPrice + price;
 
-        //   console.log("productPrice:", getProduct.regular_price);
-        //   console.log("totalPrice::", totalPrice);
+          console.log("productPrice:", getProduct.regular_price);
+          console.log("totalPrice::", totalPrice);
 
-        // }
+        }
 
-        // const Total_price = price;
-        // console.log("Total_price:", Total_price);
+        const Total_price = price;
+        console.log("Total_price:", Total_price);
 
 
         const insertTransactionDetails = await models.Transaction.create(
@@ -5526,7 +5526,7 @@ export default function (server) {
             product_price: getProductData.regular_price,
             transactions: Total_price,
             type: 1,
-            message: `${getUserData.firstName} finalized a request for a ${getProductData.product_title} for the amount of ${Total_price} this amount will reflect in you wallet`
+            message: `${getUserData.firstName} finalized a request for a ${getProductData.product_title} for the amount of $${Total_price} this amount will reflect in you wallet`
           }
         )
         console.log("insertTransactionDetails::", insertTransactionDetails);
@@ -6146,7 +6146,7 @@ export default function (server) {
             total_delivery_price: deliveryPrice,
             transactions: deliveryPrice,
             type: 1,
-            message: `You have completed this delivery for ${getStoreData.store_name} for the amount of ${getFinalRequestTable.delivery_price}, and it will reflect in your wallet`
+            message: `You have completed this delivery for ${getStoreData.store_name} for the amount of $${getFinalRequestTable.delivery_price}, and it will reflect in your wallet`
           }
         )
         console.log("insertTransactionDetails::", insertTransactionDetails);
@@ -7086,7 +7086,7 @@ export default function (server) {
         console.log("getDetailOfWithdraw:=---", findWithdrawRequest);
 
         const reason = arg.reason ? arg.reason : "";
-        const message = `Your $${findWithdrawRequest.amount} transfer request has been cancelled because of ${reason} and your funds will reflect back into your wallet.`
+        const message = `Your $${findWithdrawRequest.amount} transfer request has been cancelled because of "${reason}" and your funds will reflect back into your wallet.`
         console.log("reason::", reason);
 
         var updateReason = await models.withdrawRequests.update(
@@ -7316,7 +7316,8 @@ export default function (server) {
               user_id: findWithdrawRequest.user_id,
               type: 2,
               transactions: parseFloat(findWithdrawRequest.amount),
-              message: `Withdrawal for $${findWithdrawRequest.amount} to ${getUserData.firstName} ${transfer_type} ${acc_number} has been completed`,
+              message: `Your $${findWithdrawRequest.amount} ${transfer_type} withdrawal has been completed. It was deposited into ${acc_number} ${transfer_type}.`,
+              // `Your $${findWithdrawRequest.amount} ${transfer_type} withdrawal has been completed. It was deposited into ${acc_number} ${transfer_type}.`
               status: 15
             });
 
@@ -7358,7 +7359,7 @@ export default function (server) {
               driver_id: findWithdrawRequest.driver_id,
               type: 2,
               transactions: parseFloat(findWithdrawRequest.amount),
-              message: `Withdrawal for $${findWithdrawRequest.amount} to ${getDriverData.firstName} ${transfer_type} ${acc_number} has been completed`,
+              message: `Your $${findWithdrawRequest.amount} ${transfer_type} withdrawal has been completed. It was deposited into ${acc_number} ${transfer_type}.`,
               status: 15
             });
 
@@ -7400,7 +7401,7 @@ export default function (server) {
               store_id: findWithdrawRequest.store_id,
               type: 2,
               transactions: parseFloat(findWithdrawRequest.amount),
-              message: `Withdrawal for $${findWithdrawRequest.amount} to ${getStoreData.store_name} ${transfer_type} ${acc_number} has been completed`,
+              message: `Your $${findWithdrawRequest.amount} ${transfer_type} withdrawal has been completed. It was deposited into ${acc_number} ${transfer_type}.`,
               status: 15
             });
 
@@ -7629,7 +7630,7 @@ export default function (server) {
           store_id: arg.store_id,
           driver_id: arg.driver_id,
           transactions: arg.amount,
-          message: `Withdrawal for ${arg.amount} to ${userName} ${transfer_type} ${acc_number} has been completed`
+          message: `Your $${findWithdrawRequest.amount} ${transfer_type} withdrawal has been completed. It was deposited into ${acc_number} ${transfer_type}.`
         }
       );
       console.log("insertRefundMoney::", insertRefundMoney);

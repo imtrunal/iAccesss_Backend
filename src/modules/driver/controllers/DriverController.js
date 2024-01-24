@@ -2101,7 +2101,7 @@ exports.requestQueueList = async (req, reply) => {
 
       var [getRequestList] = await models.sequelize.query(
         `
-        SELECT *, ( 3959 * acos(cos(radians(store_lat)) * cos(radians(${result.driver_lat})) * cos(radians(${result.driver_long}) - radians(store_long)) + sin(radians(store_lat)) * sin(radians(${result.driver_lat}))) ) AS distance FROM requestQueues HAVING distance < 30 ORDER BY id DESC;
+        SELECT *, ( 3959 * acos(cos(radians(store_lat)) * cos(radians(${result.driver_lat})) * cos(radians(${result.driver_long}) - radians(store_long)) + sin(radians(store_lat)) * sin(radians(${result.driver_lat}))) ) AS distance FROM requestQueues WHERE vehicle_id = 1 HAVING distance < 30 ORDER BY id DESC;
         `
       )
       console.log("getRequestList::", getRequestList);
@@ -2111,7 +2111,7 @@ exports.requestQueueList = async (req, reply) => {
 
       var [getRequestList] = await models.sequelize.query(
         `
-        SELECT *, ( 3959 * acos(cos(radians(store_lat)) * cos(radians(${result.driver_lat})) * cos(radians(${result.driver_long}) - radians(store_long)) + sin(radians(store_lat)) * sin(radians(${result.driver_lat}))) ) AS distance FROM requestQueues HAVING distance < 90 ORDER BY id DESC;
+        SELECT *, ( 3959 * acos(cos(radians(store_lat)) * cos(radians(${result.driver_lat})) * cos(radians(${result.driver_long}) - radians(store_long)) + sin(radians(store_lat)) * sin(radians(${result.driver_lat}))) ) AS distance FROM requestQueues WHERE vehicle_id = 2 HAVING distance < 90 ORDER BY id DESC;
         `
       )
       console.log("getRequestList-else::",getRequestList);
