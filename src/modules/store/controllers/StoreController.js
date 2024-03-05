@@ -245,11 +245,11 @@ exports.storeLogin = async (req, reply) => {
     } else {
 
       // ---- otpSendCode ---- //
-      client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
-        .verifications
-        .create({ to: `${results.phoneCode}${results.phoneNumber}`, channel: 'sms' })
-        .then(verification => console.log(verification.status))
-        .catch((err) => console.log("We Hace Error:", err))
+      // client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
+      //   .verifications
+      //   .create({ to: `${results.phoneCode}${results.phoneNumber}`, channel: 'sms' })
+      //   .then(verification => console.log(verification.status))
+      //   .catch((err) => console.log("We Hace Error:", err))
       // ---- otpSendCode ---- //
 
 
@@ -621,11 +621,11 @@ exports.storeRegister = async (req, reply) => {
 
     if (stores) {
 
-      client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
-        .verifications
-        .create({ to: `${results.phoneCode}${results.phoneNumber}`, channel: 'sms' })
-        .then(verification => console.log(verification.status))
-        .catch((err) => console.log("We Hace Error:", err))
+      // client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
+      //   .verifications
+      //   .create({ to: `${results.phoneCode}${results.phoneNumber}`, channel: 'sms' })
+      //   .then(verification => console.log(verification.status))
+      //   .catch((err) => console.log("We Hace Error:", err))
 
       const dataA = await models.Store.update(
         {
@@ -880,9 +880,9 @@ exports.checkMobile = async (req, reply) => {
     if (!stores) {
 
       // ---- otpSendCode ---- //
-      const codeVerify = await client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
-        .verifications
-        .create({ to: `${results.country_code}${results.phone_number}`, channel: 'sms' })
+      // const codeVerify = await client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
+      //   .verifications
+      //   .create({ to: `${results.country_code}${results.phone_number}`, channel: 'sms' })
       //console.log("codeVerify::", codeVerify);
       // ---- End otpSendCode ---- //
 
@@ -5037,12 +5037,12 @@ exports.storeOtpVerify = async (req, reply) => {
     //console.log("result::", result);
 
     // ---- otpVerifyCode ---- //
-    const codeVerify = await client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
-      .verificationChecks
-      .create({
-        to: `${result.phoneCode}${result.phoneNumber}`,
-        code: result.otp
-      })
+    // const codeVerify = await client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
+    //   .verificationChecks
+    //   .create({
+    //     to: `${result.phoneCode}${result.phoneNumber}`,
+    //     code: result.otp
+    //   })
 
     // //console.log("codeVerify::;", codeVerify);
 
