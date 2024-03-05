@@ -445,11 +445,11 @@ exports.driverLogin = async (req, reply) => {
     } else {
 
       // ---- otpSendCode ---- //
-      // client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
-      //   .verifications
-      //   .create({ to: `${result.phoneCode}${result.phoneNumber}`, channel: 'sms' })
-      //   .then(verification => console.log(verification.status))
-      //   .catch((err) => console.log("We Hace Error:", err))
+      client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
+        .verifications
+        .create({ to: `${result.phoneCode}${result.phoneNumber}`, channel: 'sms' })
+        .then(verification => console.log(verification.status))
+        .catch((err) => console.log("We Hace Error:", err))
       // ---- otpSendCode ---- //
 
 
@@ -1770,12 +1770,12 @@ exports.driverOtpVerify = async (req, reply) => {
     console.log("result::", result);
 
     // ---- otpVerifyCode ---- //
-    // const codeVerify = await client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
-    //   .verificationChecks
-    //   .create({
-    //     to: `${result.phoneCode}${result.phoneNumber}`,
-    //     code: result.otp
-    //   })
+    const codeVerify = await client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
+      .verificationChecks
+      .create({
+        to: `${result.phoneCode}${result.phoneNumber}`,
+        code: result.otp
+      })
     // console.log("codeVerify::;", codeVerify);
     // console.log("codeVerify::;", codeVerify.status);
 
@@ -1968,10 +1968,10 @@ exports.driverCheckMobile = async (req, reply) => {
     if (!driverData) {
 
       // ---- otpSendCode ---- //
-      // const codeVerify = await client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
-      //   .verifications
-      //   .create({ to: `${result.phoneCode}${result.phoneNumber}`, channel: 'sms' })
-      // console.log("codeVerify::", codeVerify);
+      const codeVerify = await client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
+        .verifications
+        .create({ to: `${result.phoneCode}${result.phoneNumber}`, channel: 'sms' })
+      console.log("codeVerify::", codeVerify);
       // ---- End otpSendCode ---- //
 
       const insertData = await models.Driver.create(
@@ -2459,11 +2459,11 @@ exports.demoMultiReq = async (req, reply) => {
     console.log("result::", result);
 
     // ---- otpSendCode ---- //
-    // client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
-    //   .verifications
-    //   .create({ to: `${result.phoneCode}${result.phoneNumber}`, channel: 'sms' })
-    //   .then(verification => console.log(verification.status))
-    //   .catch((err) => console.log("We Hace Error:", err))
+    client.verify.v2.services('VA746e70cf9e083cac8eca19fd39b0aff1')
+      .verifications
+      .create({ to: `${result.phoneCode}${result.phoneNumber}`, channel: 'sms' })
+      .then(verification => console.log(verification.status))
+      .catch((err) => console.log("We Hace Error:", err))
     // ---- otpSendCode ---- //
 
 

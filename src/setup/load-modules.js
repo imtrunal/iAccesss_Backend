@@ -1421,7 +1421,7 @@ export default function (server) {
           product_price: getProductData.regular_price,
           extra_price: getProductData.extra_price,
           total_price: getProductData.total_price,
-          message: `You ordered ${getProductData.product_title} from your ${getStoreData.store_name} store. You paid $${Total_price}, and it was deducted from your wallet balance`,
+          message: `You ordered ${getProductData.product_title} from the ${getStoreData.store_name} store. You paid $${Total_price}, and it was deducted from your wallet balance`,
           transactions: Total_price,
           type: 1,
         }
